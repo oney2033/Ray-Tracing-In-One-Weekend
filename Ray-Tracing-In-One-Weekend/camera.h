@@ -3,6 +3,7 @@
 #include"color.h"
 #include"hittable.h"
 #include<iostream>
+#include"material.h"
 
 class camera
 {
@@ -10,6 +11,7 @@ public:
     double aspect_ratio = 1.0;  // 图像宽度与高度的比值
     int    image_width = 100;  // 渲染图像宽度（以像素数为单位
     int    samples_per_pixel = 10;//每个像素的随机样本总数
+    int    max_depth = 10;      //反弹到场景中的最大光线数量
 
     void render(const hittable& world) 
     {
@@ -26,7 +28,7 @@ public:
                 for (int sample = 0; sample < samples_per_pixel; sample++)
                 {
                     ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, world);
+                    pixel_color += ray_color(r, max_depth,world);
                 }
                 write_color(std::cout, pixel_samples_scale * pixel_color);
             }
@@ -91,12 +93,20 @@ private:
         return vec3(random_double() - 0.5, random_double() - 0.5, 0);
     }
 
-	color ray_color(const ray& r, const hittable& world)const
+	color ray_color(const ray& r, int depth, const hittable& world)const
 	{
 		hit_record rec;
-		if (world.hit(r, interval(0, infinity), rec))
+
+        if (depth <= 0)
+            return color(0, 0, 0);
+
+		if (world.hit(r, interval(0.001, infinity), rec))
 		{
-			return 0.5 * (rec.normal + (color(1, 1, 1)));
+            ray scattered;
+            color attenuation;
+            if (rec.mat->scatter(r, rec, attenuation, scattered))
+                return attenuation * ray_color(scattered, depth - 1, world);
+            return color(0, 0, 0);
 		}
 
 		vec3 unit_direction = unit_vector(r.direction());

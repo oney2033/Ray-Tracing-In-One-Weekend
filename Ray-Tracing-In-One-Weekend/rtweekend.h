@@ -2,10 +2,10 @@
 #include <cmath>
 #include <limits>
 #include <memory>
-#include "ray.h"
-#include "vec3.h"
-#include"interval.h"
 #include <cstdlib>
+//#include "ray.h"
+//#include "vec3.h"
+//#include"interval.h"
 
 const double pi = 3.1415926535897932385;
 

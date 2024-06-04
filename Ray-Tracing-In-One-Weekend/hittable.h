@@ -1,5 +1,8 @@
 #pragma once
 #include"ray.h"
+#include"rtweekend.h"
+
+class material;
 
 class hit_record
 {
@@ -8,6 +11,7 @@ public:
     vec3 normal;   // 碰撞点处的法线向量
     double t;      // 光线参数 t，表示光线上的点 P(t) = A + tB
     bool front_face;
+    std::shared_ptr<material>mat;
 
     void set_face_normal(const ray& r, const vec3& outward_normal)
     {
