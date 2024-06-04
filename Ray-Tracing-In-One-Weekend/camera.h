@@ -12,6 +12,7 @@ public:
     int    image_width = 100;  // 渲染图像宽度（以像素数为单位
     int    samples_per_pixel = 10;//每个像素的随机样本总数
     int    max_depth = 10;      //反弹到场景中的最大光线数量
+    double vfov = 90;           //垂直视角
 
     void render(const hittable& world) 
     {
@@ -57,6 +58,9 @@ private:
         // 确定视口尺寸
         auto focal_length = 1.0;
         auto viewport_height = 2.0;
+        auto theta = degrees_to_radians(vfov);
+        auto h = tan(theta / 2);
+        //auto viewport_height = 2 * h * focal_length;
         auto viewport_width = viewport_height * (double(image_width) / image_height);
 
         // 计算沿水平和垂直视口边缘向下的向量
